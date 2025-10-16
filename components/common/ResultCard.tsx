@@ -8,17 +8,19 @@ interface ResultCardProps {
 const ResultCard: React.FC<ResultCardProps> = ({ title, children }) => {
     const styles = {
         card: {
-            border: '1px solid #e0e0e0',
+            backgroundColor: '#ffffff',
+            border: '1px solid #e5e7eb',
             borderRadius: '8px',
-            padding: '20px',
-            marginTop: '20px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+            padding: '24px',
+            marginTop: '24px',
+            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.05)',
         },
         title: {
             marginTop: 0,
-            marginBottom: '15px',
-            fontSize: '1.25rem',
-            color: '#333',
+            marginBottom: '16px',
+            fontSize: '1.125rem',
+            fontWeight: 600,
+            color: '#111827',
         }
     };
   return (

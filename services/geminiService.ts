@@ -111,7 +111,7 @@ export const generateImage = async (prompt: string, aspectRatio: '1:1' | '16:9' 
   try {
     let finalPrompt = prompt;
     if (style && style !== 'none') {
-        finalPrompt = `A ${style} style image of ${prompt}`;
+        finalPrompt = `${prompt}, in the style of ${style}`;
     }
 
     const response = await ai.models.generateImages({

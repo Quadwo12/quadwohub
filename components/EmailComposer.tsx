@@ -5,6 +5,8 @@ import LoadingSpinner from './common/LoadingSpinner';
 import ResultCard from './common/ResultCard';
 import { saveStateForTab, loadStateForTab } from '../utils/storage';
 import CopyButton from './common/CopyButton';
+import { useDebounce } from '../hooks/useDebounce';
+import { theme } from '../theme';
 
 interface EmailState {
     customerSegment: string;
@@ -19,6 +21,9 @@ const EmailComposer: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const debouncedSegment = useDebounce(customerSegment, 500);
+    const debouncedGoal = useDebounce(emailGoal, 500);
+
     useEffect(() => {
         const savedState = loadStateForTab<EmailState>(Tab.Email);
         if (savedState) {
@@ -27,6 +32,10 @@ const EmailComposer: React.FC = () => {
             setEmail(savedState.email || null);
         }
     }, []);
+
+    useEffect(() => {
+        saveStateForTab(Tab.Email, { customerSegment, emailGoal, email });
+    }, [debouncedSegment, debouncedGoal, email]);
 
     const handleGenerate = async () => {
         if (!customerSegment.trim() || !emailGoal.trim()) {
@@ -39,7 +48,6 @@ const EmailComposer: React.FC = () => {
         try {
             const result = await composeMarketingEmail(customerSegment, emailGoal);
             setEmail(result);
-            saveStateForTab(Tab.Email, { customerSegment, emailGoal, email: result });
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An unknown error occurred.');
         } finally {
@@ -48,12 +56,12 @@ const EmailComposer: React.FC = () => {
     };
     
     const styles = {
-        container: { padding: '20px', border: '1px solid #eee', borderRadius: '8px' },
-        label: { display: 'block', marginBottom: '5px', fontWeight: 'bold' },
-        input: { width: '100%', padding: '10px', boxSizing: 'border-box' as 'border-box', marginBottom: '15px', borderRadius: '4px', border: '1px solid #ccc' },
-        button: { padding: '10px 20px', cursor: 'pointer', border: 'none', backgroundColor: '#007bff', color: 'white', borderRadius: '4px' },
-        error: { color: 'red', marginTop: '10px' },
-        pre: { whiteSpace: 'pre-wrap' as 'pre-wrap', wordWrap: 'break-word' as 'break-word', background: '#f8f9fa', padding: '15px', borderRadius: '4px' }
+        container: { maxWidth: '768px' },
+        label: { display: 'block', marginBottom: '8px', fontWeight: 500, color: '#374151' },
+        input: { width: '100%', padding: '12px', boxSizing: 'border-box' as 'border-box', marginBottom: '16px', borderRadius: '6px', border: '1px solid #d1d5db' },
+        button: { padding: '10px 20px', cursor: 'pointer', border: 'none', backgroundColor: theme.primaryColor, color: 'white', borderRadius: '6px', fontSize: '1rem', fontWeight: 500 },
+        error: { color: '#dc2626', marginTop: '10px' },
+        pre: { whiteSpace: 'pre-wrap' as 'pre-wrap', wordWrap: 'break-word' as 'break-word', background: '#f9fafb', padding: '16px', borderRadius: '6px', border: '1px solid #e5e7eb', lineHeight: '1.6' }
     };
     
     const getCopyText = () => `Subject: ${email?.subject}\n\n${email?.body}`;
@@ -92,7 +100,7 @@ const EmailComposer: React.FC = () => {
             
             {email && (
                 <ResultCard title={`Subject: ${email.subject}`}>
-                    <CopyButton textToCopy={getCopyText()} />
+                    <div style={{ float: 'right' }}><CopyButton textToCopy={getCopyText()} /></div>
                     <pre style={styles.pre}>{email.body}</pre>
                 </ResultCard>
             )}

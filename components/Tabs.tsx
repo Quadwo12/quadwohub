@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tab } from '../types';
+import { theme } from '../theme';
 
 interface TabsProps {
   activeTab: Tab;
@@ -18,24 +19,25 @@ const Tabs: React.FC<TabsProps> = ({ activeTab, onTabClick }) => {
   const styles = {
     tabsContainer: {
         display: 'flex',
-        justifyContent: 'center' as 'center',
-        flexWrap: 'wrap' as 'wrap',
-        margin: '20px 0',
-        borderBottom: '1px solid #ddd',
+        flexDirection: 'column' as 'column',
+        gap: '4px',
     },
     tab: {
-        padding: '10px 20px',
+        padding: '10px 12px',
         cursor: 'pointer',
         border: 'none',
         background: 'none',
-        fontSize: '1rem',
+        fontSize: '0.9rem',
         fontWeight: 500,
-        color: '#555',
-        borderBottom: '3px solid transparent',
+        color: '#374151',
+        borderRadius: '6px',
+        textAlign: 'left' as 'left',
+        transition: 'background-color 0.2s ease, color 0.2s ease',
     },
     activeTab: {
-        color: '#007bff',
-        borderBottom: '3px solid #007bff',
+        backgroundColor: '#f3f4f6',
+        color: theme.primaryColor,
+        fontWeight: 600,
     },
   };
 

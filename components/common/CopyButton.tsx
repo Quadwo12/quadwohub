@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { theme } from '../../theme';
 
 interface CopyButtonProps {
   textToCopy: string;
@@ -18,15 +19,15 @@ const CopyButton: React.FC<CopyButtonProps> = ({ textToCopy }) => {
   
   const styles = {
     button: {
-        padding: '5px 10px',
-        fontSize: '0.8rem',
+        padding: '6px 12px',
+        fontSize: '0.875rem',
         cursor: 'pointer',
-        border: '1px solid #ccc',
-        borderRadius: '4px',
-        backgroundColor: copied ? '#d4edda' : '#f8f9fa',
-        color: copied ? '#155724' : '#343a40',
-        marginLeft: '10px',
-        float: 'right' as 'right',
+        border: '1px solid #d1d5db',
+        borderRadius: '6px',
+        backgroundColor: copied ? '#dcfce7' : '#ffffff',
+        color: copied ? '#166534' : '#374151',
+        fontWeight: 500,
+        transition: 'background-color 0.2s ease',
     }
   };
 

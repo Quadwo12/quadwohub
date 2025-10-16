@@ -1,4 +1,5 @@
 import React from 'react';
+import { theme } from '../../theme';
 
 const LoadingSpinner: React.FC = () => {
     // Inject keyframes for the spin animation
@@ -22,7 +23,7 @@ const LoadingSpinner: React.FC = () => {
             width: '36px',
             height: '36px',
             borderRadius: '50%',
-            borderLeftColor: '#007bff',
+            borderLeftColor: theme.primaryColor,
             animation: 'spin 1s linear infinite',
         },
     };

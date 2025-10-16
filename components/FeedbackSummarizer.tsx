@@ -4,6 +4,8 @@ import { FeedbackSummary, Tab } from '../types';
 import LoadingSpinner from './common/LoadingSpinner';
 import ResultCard from './common/ResultCard';
 import { saveStateForTab, loadStateForTab } from '../utils/storage';
+import { useDebounce } from '../hooks/useDebounce';
+import { theme } from '../theme';
 
 interface FeedbackState {
     feedbackText: string;
@@ -16,6 +18,8 @@ const FeedbackSummarizer: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const debouncedFeedback = useDebounce(feedbackText, 500);
+
     useEffect(() => {
         const savedState = loadStateForTab<FeedbackState>(Tab.Feedback);
         if (savedState) {
@@ -23,6 +27,10 @@ const FeedbackSummarizer: React.FC = () => {
             setSummary(savedState.summary || null);
         }
     }, []);
+
+    useEffect(() => {
+        saveStateForTab(Tab.Feedback, { feedbackText, summary });
+    }, [debouncedFeedback, summary]);
 
     const handleGenerate = async () => {
         if (!feedbackText.trim()) {
@@ -35,7 +43,6 @@ const FeedbackSummarizer: React.FC = () => {
         try {
             const result = await summarizeFeedback(feedbackText);
             setSummary(result);
-            saveStateForTab(Tab.Feedback, { feedbackText, summary: result });
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An unknown error occurred.');
         } finally {
@@ -44,14 +51,15 @@ const FeedbackSummarizer: React.FC = () => {
     };
     
     const styles = {
-        container: { padding: '20px', border: '1px solid #eee', borderRadius: '8px' },
-        label: { display: 'block', marginBottom: '5px', fontWeight: 'bold' },
-        textarea: { width: '100%', minHeight: '150px', padding: '10px', boxSizing: 'border-box' as 'border-box', marginBottom: '10px', borderRadius: '4px', border: '1px solid #ccc' },
-        button: { padding: '10px 20px', cursor: 'pointer', border: 'none', backgroundColor: '#007bff', color: 'white', borderRadius: '4px' },
-        error: { color: 'red', marginTop: '10px' },
+        container: { maxWidth: '768px' },
+        label: { display: 'block', marginBottom: '8px', fontWeight: 500, color: '#374151' },
+        textarea: { width: '100%', minHeight: '150px', padding: '12px', boxSizing: 'border-box' as 'border-box', marginBottom: '16px', borderRadius: '6px', border: '1px solid #d1d5db' },
+        button: { padding: '10px 20px', cursor: 'pointer', border: 'none', backgroundColor: theme.primaryColor, color: 'white', borderRadius: '6px', fontSize: '1rem', fontWeight: 500 },
+        error: { color: '#dc2626', marginTop: '10px' },
         summarySection: { marginBottom: '20px' },
-        summaryTitle: { fontWeight: 'bold', color: '#333' },
-        ul: { paddingLeft: '20px', listStyleType: 'disc', margin: '10px 0' }
+        summaryTitle: { fontWeight: 600, color: '#111827', fontSize: '1rem', marginBottom: '12px' },
+        ul: { paddingLeft: '20px', listStyleType: 'disc', margin: '0', color: '#374151' },
+        li: { marginBottom: '8px' }
     };
 
     return (
@@ -81,19 +89,19 @@ const FeedbackSummarizer: React.FC = () => {
                     <div style={styles.summarySection}>
                         <h4 style={styles.summaryTitle}>✅ Positive Themes</h4>
                         <ul style={styles.ul}>
-                            {summary.positiveThemes.map((item, index) => <li key={index}>{item}</li>)}
+                            {summary.positiveThemes.map((item, index) => <li key={index} style={styles.li}>{item}</li>)}
                         </ul>
                     </div>
                     <div style={styles.summarySection}>
                         <h4 style={styles.summaryTitle}>🤔 Areas for Improvement</h4>
                         <ul style={styles.ul}>
-                            {summary.areasForImprovement.map((item, index) => <li key={index}>{item}</li>)}
+                            {summary.areasForImprovement.map((item, index) => <li key={index} style={styles.li}>{item}</li>)}
                         </ul>
                     </div>
                     <div style={styles.summarySection}>
                         <h4 style={styles.summaryTitle}>💡 Actionable Suggestions</h4>
                         <ul style={styles.ul}>
-                            {summary.actionableSuggestions.map((item, index) => <li key={index}>{item}</li>)}
+                            {summary.actionableSuggestions.map((item, index) => <li key={index} style={styles.li}>{item}</li>)}
                         </ul>
                     </div>
                 </ResultCard>

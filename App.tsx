@@ -30,21 +30,31 @@ const App: React.FC = () => {
 
   const styles = {
     appContainer: {
-      fontFamily: 'sans-serif',
-      maxWidth: '960px',
-      margin: '0 auto',
-      padding: '20px',
+      display: 'flex',
+      minHeight: '100vh',
     },
-    contentContainer: {
-      marginTop: '20px',
+    sidebar: {
+      width: '240px',
+      backgroundColor: '#ffffff',
+      borderRight: '1px solid #e5e7eb',
+      padding: '24px',
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+    },
+    mainContent: {
+      flex: 1,
+      padding: '24px 48px',
+      backgroundColor: '#f9fafb',
     },
   };
 
   return (
     <div style={styles.appContainer}>
-      <Header />
-      <Tabs activeTab={activeTab} onTabClick={setActiveTab} />
-      <main style={styles.contentContainer}>
+      <aside style={styles.sidebar}>
+        <Header />
+        <Tabs activeTab={activeTab} onTabClick={setActiveTab} />
+      </aside>
+      <main style={styles.mainContent}>
         {renderContent()}
       </main>
     </div>
