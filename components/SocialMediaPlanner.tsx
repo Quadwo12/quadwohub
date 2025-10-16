@@ -14,7 +14,11 @@ interface SocialState {
     posts: SocialMediaPost[];
 }
 
-const SocialMediaPlanner: React.FC = () => {
+interface SocialMediaPlannerProps {
+    onGenerateImage: (prompt: string) => void;
+}
+
+const SocialMediaPlanner: React.FC<SocialMediaPlannerProps> = ({ onGenerateImage }) => {
     const [topic, setTopic] = useState('');
     const [posts, setPosts] = useState<SocialMediaPost[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -61,6 +65,23 @@ const SocialMediaPlanner: React.FC = () => {
         postCard: { border: '1px solid #e5e7eb', padding: '16px', borderRadius: '8px', marginBottom: '16px', position: 'relative' as 'relative', backgroundColor: '#ffffff' },
         platform: { fontWeight: 600, color: theme.primaryColor, display: 'inline-block', padding: '4px 8px', backgroundColor: '#e0e7ff', borderRadius: '4px', marginBottom: '12px', fontSize: '0.875rem' },
         postContent: { display: 'flex', flexDirection: 'column' as 'column', gap: '8px' },
+        visualSuggestionContainer: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            flexWrap: 'wrap' as 'wrap',
+        },
+        generateImageButton: {
+            padding: '4px 10px',
+            fontSize: '0.8rem',
+            cursor: 'pointer',
+            border: `1px solid ${theme.primaryColor}`,
+            borderRadius: '6px',
+            backgroundColor: '#ffffff',
+            color: theme.primaryColor,
+            fontWeight: 500,
+            transition: 'background-color 0.2s ease, color 0.2s ease',
+        },
     };
 
     return (
@@ -95,7 +116,23 @@ const SocialMediaPlanner: React.FC = () => {
                                 <p style={styles.platform}>{post.platform}</p>
                                 <div style={styles.postContent}>
                                   <p><strong>Copy:</strong> {post.copy}</p>
-                                  <p><strong>Visual:</strong> {post.visual}</p>
+                                  <div style={styles.visualSuggestionContainer}>
+                                    <p style={{ margin: 0 }}><strong>Visual:</strong> {post.visual}</p>
+                                    <button
+                                        onClick={() => onGenerateImage(post.visual)}
+                                        style={styles.generateImageButton}
+                                        onMouseOver={(e) => {
+                                            e.currentTarget.style.backgroundColor = theme.primaryColor;
+                                            e.currentTarget.style.color = '#ffffff';
+                                        }}
+                                        onMouseOut={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#ffffff';
+                                            e.currentTarget.style.color = theme.primaryColor;
+                                        }}
+                                    >
+                                        ✨ Generate Image
+                                    </button>
+                                  </div>
                                 </div>
                             </div>
                          );
